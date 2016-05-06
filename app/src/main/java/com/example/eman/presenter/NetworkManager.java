@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.eman.Model.NetworkApi;
+import com.example.eman.networkingtask.MyActivity;
 import com.example.eman.pojo.MyRespone;
 import com.example.eman.pojo.User;
 
@@ -20,6 +21,8 @@ public class NetworkManager {
 
     private static final String BASE_URL = "http://www.mobiledeveloperweekend.net/";
 
+    MyActivity myActivity;
+
     String status;
 
     Retrofit retrofit = new Retrofit.Builder()
@@ -29,6 +32,9 @@ public class NetworkManager {
 
     NetworkApi networkApi = retrofit.create(NetworkApi.class);
 
+    public NetworkManager(MyActivity myActivity){
+        this.myActivity = myActivity;
+    }
 //    public User userLogIn (String userName,String password){
 //
 //        Call<MyRespone> userCall = networkApi.userLogIn(userName, password);
@@ -49,7 +55,7 @@ public class NetworkManager {
 //        return user[0];
 //    }
 
-    public  String getStatus (String userName,String password){
+    public  void getStatus (String userName,String password){
 
         Log.i("*********","inside get status");
         Call<MyRespone> userCall = networkApi.userLogIn(userName, password);
@@ -57,9 +63,10 @@ public class NetworkManager {
         userCall.enqueue(new Callback<MyRespone>() {
             @Override
             public void onResponse(Response<MyRespone> response) {
-                Log.i("**********","onresposnse");
+                Log.i("**********", "onresposnse");
                 MyRespone myRespone = response.body();
                 status = myRespone.getStatus();
+                myActivity.showStatus(status);
                 Log.i("onresposnse",myRespone.getStatus());
                 Log.i("onresposnse",status);
             }
@@ -69,7 +76,7 @@ public class NetworkManager {
                 Log.i("onfailure",t.getMessage());
             }
         });
-
-        return status;
     }
+
+
 }

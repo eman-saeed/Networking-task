@@ -6,21 +6,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.example.eman.pojo.User;
 import com.example.eman.presenter.NetworkManager;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Action1;
 
 public class MyActivity extends AppCompatActivity {
 
-    //private static final String BASE_URL = "http://www.mobiledeveloperweekend.net/";
     TextView id;
     TextView email;
     TextView firstName;
     TextView lastName;
+
+    TextView statusTxtView;
 
     int userId;
     String userEmail,userFirstName,userLastName;
@@ -39,46 +38,45 @@ public class MyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my);
 
         //bind compenent
-       // bindCompenent();
+        bindCompenent();
 
-        networkManager = new NetworkManager();
+        if (networkManager == null)
+            networkManager = new NetworkManager(this);
 
-        status = networkManager.getStatus("eng.medhat.cs.h@gmail.com", "medhat123");
-
-//        button = (Button) findViewById(R.id.click);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("*********","oncick");
-//                //get user ifo
-//                //user = getUserInfo();
-//                //show info on the activity
+        button = (Button) findViewById(R.id.click);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("*********", "oncick");
+                //get user ifo
+                //user = getUserInfo();
+                //show info on the activity
 //                if (user != null)
 //                   // showInfo(user);
 //                //show status
 //                Toast.makeText(MyActivity.this, status, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+                networkManager.getStatus("eng.medhat.cs.h@gmail.com", "medhat123");
+            }
+        });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void showStatus(String status){
+        statusTxtView.setText(status);
     }
+//    private void showInfo(User user) {
+//        id.setText(user.getId()+"");
+//        email.setText(user.getEmail());
+//        firstName.setText(user.getFirstName());
+//        lastName.setText(user.getLastName());
+//    }
 
-    private void showInfo(User user) {
-        id.setText(user.getId()+"");
-        email.setText(user.getEmail());
-        firstName.setText(user.getFirstName());
-        lastName.setText(user.getLastName());
-    }
-//
-//    private void bindCompenent() {
+    private void bindCompenent() {
 //        id = (TextView) findViewById(R.id.userId);
 //        email = (TextView) findViewById(R.id.userEmail);
 //        firstName = (TextView) findViewById(R.id.userFirstName);
 //        lastName = (TextView) findViewById(R.id.userLastName);
-//    }
+        statusTxtView = (TextView) findViewById(R.id.statusTxtView);
+    }
 
 //    public User getUserInfo() {
 //        //get user call from network manager class (user name and password could be taken from user)
